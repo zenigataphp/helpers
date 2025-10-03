@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zenigata\Helpers;
 
 use function implode;
-use function is_object;
 use function sprintf;
 
 use InvalidArgumentException;
@@ -34,14 +33,14 @@ class ContainerResolver
      * @param string             $id         Identifier of the entry to resolve.
      * @param string|string[]    $instanceOf Classes or interfaces to check; empty disables type validation.
      *
-     * @return object The resolved service instance.
+     * @return mixed The resolved service instance.
      * @throws InvalidArgumentException If the service is missing or does not match the expected type(s).
      */
     public static function resolve(
         ContainerInterface $container,
         string $id,
         string|array $instanceOf = ''
-    ): object
+    ): mixed
     {
         if (!$container->has($id)) {
             throw new InvalidArgumentException(sprintf(
@@ -57,7 +56,7 @@ class ContainerResolver
         }
 
         foreach ((array) $instanceOf as $expected) {
-            if (is_object($service) && $service instanceof $expected) {
+            if ($service instanceof $expected) {
                 return $service;
             }
         }
